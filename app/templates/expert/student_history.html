@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ student.full_name }} - History{% endblock %}
+{% block content %}
+<h1>{{ student.full_name }}'s Consultation History</h1>
+<p class="help-text">{{ student.department or "" }} {{ ("· " ~ student.student_id_number) if student.student_id_number }}</p>
+
+<div class="card">
+  {% if history %}
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Category</th><th>Expert</th><th>Date</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody>
+    {% for c in history %}
+      <tr>
+        <td>{{ c.category.name }}</td>
+        <td>{{ c.expert.full_name if c.expert else "—" }}</td>
+        <td>{{ c.requested_date.strftime("%b %d, %Y") }}</td>
+        <td><span class="badge {{ c.status_badge_class }}">{{ c.status|title }}</span></td>
+        <td>{{ c.expert_notes or "—" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <div class="empty-state">No consultation history.</div>
+  {% endif %}
+</div>
+<a href="{{ url_for('expert.queue') }}">&larr; Back to Queue</a>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+    <div class="card">
+        <h1>Log In</h1>
+        <form class="form-grid" method="POST">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+            {{ form.submit(class="btn") }}
+        </form>
+        <p class="muted" style="margin-top:1rem;">
+            New student? <a href="{{ url_for('auth.register') }}">Register here</a>.
+        </p>
+    </div>
+</div>
+{% endblock %}

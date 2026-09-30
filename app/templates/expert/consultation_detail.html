@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}Consultation #{{ consultation.id }}{% endblock %}
+{% block content %}
+<h1>Consultation #{{ consultation.id }}
+    <span class="badge-status status-{{ consultation.status.value }}">{{ consultation.status.value.replace('_',' ') }}</span>
+</h1>
+
+<div class="detail-grid">
+    <div>
+        <div class="card">
+            <h2 style="margin-top:0;">Details</h2>
+            <dl class="kv">
+                <dt>Student</dt><dd>{{ consultation.student.full_name }} ({{ consultation.student.student_id_number or 'n/a' }})</dd>
+                <dt>Department</dt><dd>{{ consultation.student.department or '—' }}</dd>
+                <dt>Category</dt><dd>{{ consultation.category.name }}</dd>
+                <dt>Requested</dt><dd>{{ consultation.requested_date }} at {{ consultation.requested_time.strftime('%I:%M %p') }}</dd>
+                <dt>Reason</dt><dd>{{ consultation.student_message }}</dd>
+                {% if consultation.decline_reason %}<dt>Decline Reason</dt><dd>{{ consultation.decline_reason }}</dd>{% endif %}
+            </dl>
+        </div>
+
+        {% if consultation.status.value == 'accepted' %}
+        <div class="card">
+            <h2 style="margin-top:0;">Complete Consultation</h2>
+            <form class="form-grid" method="POST" action="{{ url_for('expert.complete_consultation', consultation_id=consultation.id) }}">
+                {{ complete_form.hidden_tag() }}
+                {{ render_field(complete_form.expert_notes) }}
+                {{ render_field(complete_form.diagnosis) }}
+                {{ complete_form.submit(class="btn btn-success") }}
+            </form>
+        </div>
+        {% endif %}
+
+        {% if consultation.status.value == 'completed' %}
+        <div class="card">
+            <h2 style="margin-top:0;">Consultation Notes</h2>
+            <dl class="kv">
+                <dt>Notes</dt><dd>{{ consultation.expert_notes or '—' }}</dd>
+                <dt>Diagnosis</dt><dd>{{ consultation.diagnosis or '—' }}</dd>
+                <dt>Completed</dt><dd>{{ consultation.completed_at.strftime('%b %d, %Y %I:%M %p') if consultation.completed_at else '—' }}</dd>
+            </dl>
+        </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <div class="card">
+            <h2 style="margin-top:0;">Actions</h2>
+            {% if consultation.status.value == 'pending' %}
+                <form method="POST" action="{{ url_for('expert.accept_consultation', consultation_id=consultation.id) }}" style="margin-bottom:0.75rem;">
+                    <button class="btn btn-success" type="submit" style="width:100%;">Accept</button>
+                </form>
+                <form class="form-grid" method="POST" action="{{ url_for('expert.decline_consultation', consultation_id=consultation.id) }}">
+                    {{ decline_form.hidden_tag() }}
+                    {{ render_field(decline_form.decline_reason) }}
+                    {{ decline_form.submit(class="btn btn-danger") }}
+                </form>
+            {% elif consultation.status.value == 'accepted' %}
+                <p class="muted">Use the "Complete Consultation" form to finish this session.</p>
+            {% else %}
+                <p class="muted">No further actions available for this status.</p>
+            {% endif %}
+            <a class="btn btn-secondary" style="width:100%; margin-top:0.75rem; text-align:center;" href="{{ url_for('expert.requests_list') }}">Back to Requests</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

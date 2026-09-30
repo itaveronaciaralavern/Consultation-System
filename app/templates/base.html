@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Consultation System{% endblock %} · Abuyog Community College</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="{{ url_for('main.index') }}">
+                Abuyog Community College <span>Consultation System</span>
+            </a>
+            <nav class="nav">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_super_admin %}
+                        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                        <a href="{{ url_for('admin.manage_users') }}">Users</a>
+                        <a href="{{ url_for('admin.categories') }}">Categories</a>
+                        <a href="{{ url_for('admin.all_consultations') }}">Consultations</a>
+                        <a href="{{ url_for('admin.audit_logs') }}">Audit Logs</a>
+                    {% elif current_user.is_medical_expert %}
+                        <a href="{{ url_for('expert.dashboard') }}">Dashboard</a>
+                        <a href="{{ url_for('expert.requests_list') }}">Requests</a>
+                        <a href="{{ url_for('expert.availability') }}">Availability</a>
+                        <a href="{{ url_for('expert.history') }}">History</a>
+                    {% elif current_user.is_student %}
+                        <a href="{{ url_for('student.dashboard') }}">Dashboard</a>
+                        <a href="{{ url_for('student.book') }}">Book Consultation</a>
+                        <a href="{{ url_for('student.history') }}">My History</a>
+                    {% endif %}
+                    <a class="bell" href="{{ url_for('main.notifications') }}">
+                        Notifications
+                        {% if unread_notification_count %}
+                            <span class="badge">{{ unread_notification_count }}</span>
+                        {% endif %}
+                    </a>
+                    <span class="user-chip">{{ current_user.full_name }} <em>({{ current_user.role.value.replace('_',' ') }})</em></span>
+                    <a href="{{ url_for('auth.change_password') }}">Change Password</a>
+                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}">Login</a>
+                    <a href="{{ url_for('auth.register') }}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Abuyog Community College &middot; Consultation Management System</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

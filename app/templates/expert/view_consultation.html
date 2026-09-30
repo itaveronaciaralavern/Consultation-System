@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Consultation #{{ consultation.id }}{% endblock %}
+{% block content %}
+<h1>Consultation #{{ consultation.id }}</h1>
+
+<div class="two-col">
+<div>
+<div class="card">
+  <p><span class="badge {{ consultation.status_badge_class }}">{{ consultation.status|title }}</span></p>
+  <table>
+    <tr><th style="width:180px;">Student</th><td>{{ consultation.student.full_name }} ({{ consultation.student.department or "—" }})</td></tr>
+    <tr><th>Category</th><td>{{ consultation.category.name }}</td></tr>
+    <tr><th>Requested Date/Time</th><td>{{ consultation.requested_date.strftime("%b %d, %Y") }} at {{ consultation.requested_time.strftime("%I:%M %p") }}</td></tr>
+    <tr><th>Student's Reason</th><td>{{ consultation.reason }}</td></tr>
+    {% if consultation.status == "declined" %}
+    <tr><th>Decline Reason</th><td>{{ consultation.decline_reason }}</td></tr>
+    {% endif %}
+    {% if consultation.expert_notes %}
+    <tr><th>Consultation Notes</th><td>{{ consultation.expert_notes }}</td></tr>
+    {% endif %}
+  </table>
+
+  {% if consultation.status == "pending" %}
+  <hr style="margin:20px 0;border:none;border-top:1px solid #e0e4e8;">
+  <h3>Decision</h3>
+  <form method="POST" class="stacked-form">
+    {{ decision_form.csrf_token }}
+    {{ decision_form.decline_reason.label }}
+    {{ decision_form.decline_reason() }}
+    {% for e in decision_form.decline_reason.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    <div class="actions-row" style="margin-top:12px;">
+      <button type="submit" name="decision_submit_accept" class="btn btn-success"
+              onclick="document.getElementById('decision-field').value='accept';">Accept</button>
+      <button type="submit" class="btn btn-danger"
+              onclick="document.getElementById('decision-field').value='decline';">Decline</button>
+    </div>
+    {{ decision_form.decision(id="decision-field") }}
+  </form>
+  {% endif %}
+
+  {% if consultation.status == "accepted" %}
+  <hr style="margin:20px 0;border:none;border-top:1px solid #e0e4e8;">
+  <h3>Complete Consultation</h3>
+  <form method="POST" action="{{ url_for('expert.complete_consultation', consultation_id=consultation.id) }}" class="stacked-form">
+    {{ complete_form.hidden_tag() }}
+    {{ complete_form.expert_notes.label }}
+    {{ complete_form.expert_notes() }}
+    {% for e in complete_form.expert_notes.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    {{ complete_form.submit(class_="btn btn-primary") }}
+  </form>
+  {% endif %}
+</div>
+</div>
+
+<div>
+<div class="card">
+  <h3>Student History (with you)</h3>
+  <a class="btn btn-outline btn-sm" href="{{ url_for('expert.student_history', student_id=consultation.student_id) }}">View Full History</a>
+</div>
+</div>
+</div>
+
+<a href="{{ url_for('expert.queue') }}">&larr; Back to Queue</a>
+{% endblock %}

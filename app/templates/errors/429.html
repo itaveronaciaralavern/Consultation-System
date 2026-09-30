@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Too Many Requests{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>429 — Too Many Requests</h1>
+    <p>You've made too many attempts in a short time. Please wait a moment and try again.</p>
+    <a class="btn" href="{{ url_for('main.index') }}">Go Home</a>
+</div>
+{% endblock %}

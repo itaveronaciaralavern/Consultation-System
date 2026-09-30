@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Consultation History{% endblock %}
+{% block content %}
+<h1>Consultation History</h1>
+<div class="card">
+    {% if consultations %}
+    <table>
+        <thead><tr><th>Student</th><th>Category</th><th>Date/Time</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        {% for c in consultations %}
+            <tr>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td><span class="badge-status status-{{ c.status.value }}">{{ c.status.value.replace('_',' ') }}</span></td>
+                <td><a class="btn btn-sm btn-secondary" href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No consultation history yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

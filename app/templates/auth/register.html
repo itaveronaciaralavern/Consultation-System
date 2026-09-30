@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}Student Registration{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+    <div class="card">
+        <h1>Student Registration</h1>
+        <p class="muted" style="font-size:0.85rem;">
+            Self-registration creates a Student account only. Medical Expert and
+            Admin accounts are created by the Super Admin.
+        </p>
+        <form class="form-grid" method="POST">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.full_name) }}
+            {{ render_field(form.username) }}
+            {{ render_field(form.email) }}
+            {{ render_field(form.student_id_number) }}
+            {{ render_field(form.department) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.confirm_password) }}
+            {{ form.submit(class="btn") }}
+        </form>
+    </div>
+</div>
+{% endblock %}

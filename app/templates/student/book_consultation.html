@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ "Reschedule" if is_reschedule else "Book" }} Consultation{% endblock %}
+{% block content %}
+<h1>{{ "Reschedule Consultation" if is_reschedule else "Book a Consultation" }}</h1>
+<div class="card" style="max-width:560px;">
+  <form method="POST" class="stacked-form" novalidate>
+    {{ form.hidden_tag() }}
+    {% from "partials/_form_helpers.html" import field %}
+    {{ field(form.category_id) }}
+    {{ field(form.expert_id) }}
+    {{ field(form.requested_date) }}
+    {{ field(form.requested_time) }}
+    {{ field(form.reason) }}
+    {{ form.submit(class_="btn btn-primary") }}
+  </form>
+</div>
+{% endblock %}

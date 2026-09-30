@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field, render_checkbox %}
+{% block title %}{{ 'Create User' if mode == 'create' else 'Edit User' }}{% endblock %}
+{% block content %}
+<h1>{{ 'Create Account' if mode == 'create' else 'Edit ' + target_user.full_name }}</h1>
+<div class="card">
+    <form class="form-grid" method="POST">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.full_name) }}
+        {% if mode == 'create' %}
+            {{ render_field(form.username) }}
+        {% endif %}
+        {{ render_field(form.email) }}
+        {% if mode == 'create' %}
+            {{ render_field(form.role) }}
+        {% endif %}
+        {{ render_field(form.department) }}
+        {{ render_field(form.student_id_number) }}
+        {{ render_field(form.specialization) }}
+        {% if mode == 'create' %}
+            {{ render_field(form.password) }}
+        {% else %}
+            {{ render_checkbox(form.is_active_account) }}
+        {% endif %}
+        {{ form.submit(class="btn") }}
+    </form>
+</div>
+{% endblock %}

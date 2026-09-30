@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Consultation Requests{% endblock %}
+{% block content %}
+<h1>Consultation Requests</h1>
+
+<h2>My Requests</h2>
+<div class="card">
+    {% if my_requests %}
+    <table>
+        <thead><tr><th>Student</th><th>Category</th><th>Date/Time</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        {% for c in my_requests %}
+            <tr>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td><span class="badge-status status-{{ c.status.value }}">{{ c.status.value.replace('_',' ') }}</span></td>
+                <td><a class="btn btn-sm btn-secondary" href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">You have no requests yet.</div>
+    {% endif %}
+</div>
+
+<h2>Open Requests Pool</h2>
+<div class="card">
+    {% if open_requests %}
+    <table>
+        <thead><tr><th>Student</th><th>Category</th><th>Date/Time</th><th></th></tr></thead>
+        <tbody>
+        {% for c in open_requests %}
+            <tr>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td>
+                    <form class="inline-form" method="POST" action="{{ url_for('expert.accept_consultation', consultation_id=c.id) }}">
+                        <button class="btn btn-sm btn-success" type="submit">Accept</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No open requests.</div>
+    {% endif %}
+</div>
+{% endblock %}

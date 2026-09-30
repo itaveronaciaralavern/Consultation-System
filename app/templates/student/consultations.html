@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Consultations{% endblock %}
+{% block content %}
+<h1>My Consultations</h1>
+
+<div class="pill-nav">
+  <a href="{{ url_for('student.my_consultations') }}" class="{{ 'active' if not status_filter }}">All</a>
+  <a href="{{ url_for('student.my_consultations', status='pending') }}" class="{{ 'active' if status_filter=='pending' }}">Pending</a>
+  <a href="{{ url_for('student.my_consultations', status='accepted') }}" class="{{ 'active' if status_filter=='accepted' }}">Accepted</a>
+  <a href="{{ url_for('student.my_consultations', status='completed') }}" class="{{ 'active' if status_filter=='completed' }}">Completed</a>
+  <a href="{{ url_for('student.my_consultations', status='declined') }}" class="{{ 'active' if status_filter=='declined' }}">Declined</a>
+  <a href="{{ url_for('student.my_consultations', status='cancelled') }}" class="{{ 'active' if status_filter=='cancelled' }}">Cancelled</a>
+</div>
+
+<div class="card">
+  {% if consultations %}
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Category</th><th>Expert</th><th>Date / Time</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for c in consultations %}
+      <tr>
+        <td>{{ c.category.name }}</td>
+        <td>{{ c.expert.full_name if c.expert else "Unassigned" }}</td>
+        <td>{{ c.requested_date.strftime("%b %d, %Y") }} {{ c.requested_time.strftime("%I:%M %p") }}</td>
+        <td><span class="badge {{ c.status_badge_class }}">{{ c.status|title }}</span></td>
+        <td><a href="{{ url_for('student.view_consultation', consultation_id=c.id) }}">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <div class="empty-state">No consultations found for this filter.</div>
+  {% endif %}
+</div>
+{% endblock %}

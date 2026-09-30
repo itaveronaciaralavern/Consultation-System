@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, {{ current_user.full_name }}</h1>
+
+<div class="grid grid-3">
+    <div class="card stat-card"><div class="num">{{ total_requests }}</div><div class="label">Total Requests</div></div>
+    <div class="card stat-card"><div class="num">{{ upcoming|length }}</div><div class="label">Upcoming</div></div>
+    <div class="card stat-card"><a class="btn" href="{{ url_for('student.book') }}" style="margin-top:0.5rem;">+ Book Consultation</a></div>
+</div>
+
+<h2>Upcoming / Pending</h2>
+<div class="card">
+    {% if upcoming %}
+    <table>
+        <thead><tr><th>Expert</th><th>Category</th><th>Date/Time</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        {% for c in upcoming %}
+            <tr>
+                <td>{{ c.expert.full_name if c.expert else 'Unassigned' }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td><span class="badge-status status-{{ c.status.value }}">{{ c.status.value.replace('_',' ') }}</span></td>
+                <td><a class="btn btn-sm btn-secondary" href="{{ url_for('student.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">Nothing upcoming. <a href="{{ url_for('student.book') }}">Book a consultation</a>.</div>
+    {% endif %}
+</div>
+
+<h2>Recent History</h2>
+<div class="card">
+    {% if recent_history %}
+    <table>
+        <thead><tr><th>Expert</th><th>Category</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for c in recent_history %}
+            <tr>
+                <td>{{ c.expert.full_name if c.expert else '—' }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }}</td>
+                <td><span class="badge-status status-{{ c.status.value }}">{{ c.status.value.replace('_',' ') }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No past consultations yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

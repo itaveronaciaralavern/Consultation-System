@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Expert Dashboard{% endblock %}
+{% block content %}
+<h1>Welcome, {{ current_user.full_name }}</h1>
+
+<div class="grid grid-4">
+    <div class="card stat-card"><div class="num">{{ pending_unassigned }}</div><div class="label">Open Requests</div></div>
+    <div class="card stat-card"><div class="num">{{ my_pending }}</div><div class="label">My Pending</div></div>
+    <div class="card stat-card"><div class="num">{{ my_accepted }}</div><div class="label">My Accepted</div></div>
+    <div class="card stat-card"><div class="num">{{ my_completed }}</div><div class="label">My Completed</div></div>
+</div>
+
+<h2>Upcoming Accepted Sessions</h2>
+<div class="card">
+    {% if upcoming %}
+    <table>
+        <thead><tr><th>Student</th><th>Category</th><th>Date/Time</th><th></th></tr></thead>
+        <tbody>
+        {% for c in upcoming %}
+            <tr>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td><a class="btn btn-sm btn-secondary" href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No upcoming sessions.</div>
+    {% endif %}
+</div>
+
+<h2>Open Requests (Unassigned)</h2>
+<div class="card">
+    {% if unassigned_requests %}
+    <table>
+        <thead><tr><th>Student</th><th>Category</th><th>Requested Date/Time</th><th></th></tr></thead>
+        <tbody>
+        {% for c in unassigned_requests %}
+            <tr>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td>
+                    <form class="inline-form" method="POST" action="{{ url_for('expert.accept_consultation', consultation_id=c.id) }}">
+                        <button class="btn btn-sm btn-success" type="submit">Accept</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No open requests right now.</div>
+    {% endif %}
+</div>
+{% endblock %}

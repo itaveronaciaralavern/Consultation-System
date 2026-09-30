@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="card" style="text-align:center; padding:3rem 2rem;">
+    <h1>Abuyog Community College</h1>
+    <p class="muted">Consultation Management System</p>
+    <p style="max-width:520px; margin:1rem auto;">
+        Book consultations with the college's medical experts, track the status of
+        your requests, and keep a record of past visits — all in one place.
+    </p>
+    <div style="margin-top:1.5rem; display:flex; gap:0.75rem; justify-content:center;">
+        <a class="btn" href="{{ url_for('auth.login') }}">Log In</a>
+        <a class="btn btn-secondary" href="{{ url_for('auth.register') }}">Student Registration</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Manage Users{% endblock %}
+{% block content %}
+<h1>Manage Users</h1>
+
+<div class="actions-row" style="margin-bottom:16px;">
+  <a class="btn btn-primary" href="{{ url_for('admin.create_user') }}">+ New Account</a>
+</div>
+
+<div class="pill-nav">
+  <a href="{{ url_for('admin.list_users') }}" class="{{ 'active' if not role_filter }}">All</a>
+  <a href="{{ url_for('admin.list_users', role='super_admin') }}" class="{{ 'active' if role_filter=='super_admin' }}">Super Admins</a>
+  <a href="{{ url_for('admin.list_users', role='medical_expert') }}" class="{{ 'active' if role_filter=='medical_expert' }}">Medical Experts</a>
+  <a href="{{ url_for('admin.list_users', role='student') }}" class="{{ 'active' if role_filter=='student' }}">Students</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Dept/Specialty</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.full_name }}</td>
+        <td>{{ u.username }} <br><small class="help-text">{{ u.email }}</small></td>
+        <td>{{ u.role.name.replace('_',' ')|title }}</td>
+        <td>{{ u.department or "—" }}</td>
+        <td>{% if u.is_active_account %}<span class="badge badge-completed">Active</span>{% else %}<span class="badge badge-cancelled">Deactivated</span>{% endif %}</td>
+        <td class="actions-row">
+          <a class="btn btn-outline btn-sm" href="{{ url_for('admin.edit_user', user_id=u.id) }}">Edit</a>
+          {% if u.id != current_user.id %}
+          <form method="POST" action="{{ url_for('admin.toggle_active', user_id=u.id) }}" data-confirm="{{ 'Deactivate' if u.is_active_account else 'Reactivate' }} {{ u.full_name }}?">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-sm {{ 'btn-danger' if u.is_active_account else 'btn-success' }}">
+              {{ "Deactivate" if u.is_active_account else "Reactivate" }}
+            </button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

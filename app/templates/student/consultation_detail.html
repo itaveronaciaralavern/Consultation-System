@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}Consultation #{{ consultation.id }}{% endblock %}
+{% block content %}
+<h1>Consultation #{{ consultation.id }}
+    <span class="badge-status status-{{ consultation.status.value }}">{{ consultation.status.value.replace('_',' ') }}</span>
+</h1>
+
+<div class="detail-grid">
+    <div>
+        <div class="card">
+            <h2 style="margin-top:0;">Details</h2>
+            <dl class="kv">
+                <dt>Expert</dt><dd>{{ consultation.expert.full_name if consultation.expert else 'Not yet assigned' }}</dd>
+                <dt>Category</dt><dd>{{ consultation.category.name }}</dd>
+                <dt>Date/Time</dt><dd>{{ consultation.requested_date }} at {{ consultation.requested_time.strftime('%I:%M %p') }}</dd>
+                <dt>Reason</dt><dd>{{ consultation.student_message }}</dd>
+                {% if consultation.decline_reason %}<dt>Decline Reason</dt><dd>{{ consultation.decline_reason }}</dd>{% endif %}
+            </dl>
+        </div>
+
+        {% if consultation.status.value == 'completed' %}
+        <div class="card">
+            <h2 style="margin-top:0;">Consultation Notes</h2>
+            <dl class="kv">
+                <dt>Notes</dt><dd>{{ consultation.expert_notes or '—' }}</dd>
+                <dt>Diagnosis</dt><dd>{{ consultation.diagnosis or '—' }}</dd>
+            </dl>
+        </div>
+        {% endif %}
+    </div>
+
+    <div>
+        {% if consultation.status.value in ['pending', 'accepted'] %}
+        <div class="card">
+            <h2 style="margin-top:0;">Reschedule</h2>
+            <form class="form-grid" method="POST" action="{{ url_for('student.reschedule_consultation', consultation_id=consultation.id) }}">
+                {{ reschedule_form.hidden_tag() }}
+                {{ render_field(reschedule_form.requested_date) }}
+                {{ render_field(reschedule_form.requested_time) }}
+                {{ reschedule_form.submit(class="btn") }}
+            </form>
+        </div>
+        <div class="card">
+            <form method="POST" action="{{ url_for('student.cancel_consultation', consultation_id=consultation.id) }}" data-confirm="Cancel this consultation request?">
+                <button class="btn btn-danger" type="submit" style="width:100%;">Cancel Consultation</button>
+            </form>
+        </div>
+        {% endif %}
+        <a class="btn btn-secondary" style="width:100%; text-align:center; display:block;" href="{{ url_for('student.history') }}">Back to History</a>
+    </div>
+</div>
+{% endblock %}

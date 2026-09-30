@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>500 — Something Went Wrong</h1>
+    <p>An unexpected error occurred. Please try again, or contact the administrator if it persists.</p>
+    <a class="btn" href="{{ url_for('main.index') }}">Go Home</a>
+</div>
+{% endblock %}

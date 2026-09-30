@@ -1,0 +1,23 @@
+{% macro render_field(field) %}
+<div class="form-row">
+    {{ field.label }}
+    {{ field(**kwargs) }}
+    {% if field.errors %}
+        <div class="form-errors">
+            {% for error in field.errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_checkbox(field) %}
+<div class="form-row checkbox-row">
+    {{ field(**kwargs) }}
+    {{ field.label }}
+    {% if field.errors %}
+        <div class="form-errors">
+            {% for error in field.errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}

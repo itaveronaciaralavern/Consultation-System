@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+instance/
+.env
+migrations/versions/*.pyc
+.DS_Store

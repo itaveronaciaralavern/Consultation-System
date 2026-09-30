@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ "New Category" if mode == "create" else "Edit Category" }}{% endblock %}
+{% block content %}
+<h1>{{ "New Category" if mode == "create" else "Edit Category" }}</h1>
+<div class="card" style="max-width:520px;">
+  <form method="POST" class="stacked-form" novalidate>
+    {{ form.hidden_tag() }}
+    {% from "partials/_form_helpers.html" import field %}
+    {{ field(form.name) }}
+    {{ field(form.description) }}
+    {{ field(form.is_active) }}
+    {{ form.submit(class_="btn btn-primary") }}
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field, render_checkbox %}
+{% block title %}Consultation Categories{% endblock %}
+{% block content %}
+<h1>Consultation Categories</h1>
+
+<div class="detail-grid">
+    <div>
+        <div class="card">
+            {% if categories %}
+            <table>
+                <thead><tr><th>Name</th><th>Description</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                {% for c in categories %}
+                    <tr>
+                        <td>{{ c.name }}</td>
+                        <td class="muted">{{ c.description or '—' }}</td>
+                        <td>{% if c.is_active %}<span class="badge-status status-accepted">active</span>{% else %}<span class="badge-status status-cancelled">inactive</span>{% endif %}</td>
+                        <td>
+                            <form class="inline-form" method="POST" action="{{ url_for('admin.toggle_category', category_id=c.id) }}">
+                                <button class="btn btn-sm btn-secondary" type="submit">{{ 'Deactivate' if c.is_active else 'Activate' }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="empty-state">No categories yet.</div>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <div class="card">
+            <h2 style="margin-top:0;">Add Category</h2>
+            <form class="form-grid" method="POST">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.name) }}
+                {{ render_field(form.description) }}
+                {{ render_checkbox(form.is_active) }}
+                {{ form.submit(class="btn") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

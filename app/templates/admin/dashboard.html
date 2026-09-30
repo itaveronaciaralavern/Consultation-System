@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Super Admin Dashboard{% endblock %}
+{% block content %}
+<h1>System Dashboard</h1>
+
+<div class="grid grid-4">
+    <div class="card stat-card"><div class="num">{{ total_students }}</div><div class="label">Students</div></div>
+    <div class="card stat-card"><div class="num">{{ total_experts }}</div><div class="label">Medical Experts</div></div>
+    <div class="card stat-card"><div class="num">{{ total_consultations }}</div><div class="label">Total Consultations</div></div>
+    <div class="card stat-card"><div class="num">{{ status_counts.get('pending', 0) }}</div><div class="label">Pending Now</div></div>
+</div>
+
+<h2>Status Breakdown</h2>
+<div class="card">
+    <table>
+        <thead><tr><th>Status</th><th>Count</th></tr></thead>
+        <tbody>
+        {% for status in ['pending', 'accepted', 'completed', 'declined', 'cancelled', 'reschedule_requested'] %}
+            <tr>
+                <td><span class="badge-status status-{{ status }}">{{ status.replace('_',' ') }}</span></td>
+                <td>{{ status_counts.get(status, 0) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h2>Recent Consultations</h2>
+<div class="card">
+    {% if recent_consultations %}
+    <table>
+        <thead><tr><th>ID</th><th>Student</th><th>Expert</th><th>Category</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for c in recent_consultations %}
+            <tr>
+                <td>#{{ c.id }}</td>
+                <td>{{ c.student.full_name }}</td>
+                <td>{{ c.expert.full_name if c.expert else '—' }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.requested_date }} {{ c.requested_time.strftime('%I:%M %p') }}</td>
+                <td><span class="badge-status status-{{ c.status.value }}">{{ c.status.value.replace('_',' ') }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty-state">No consultations yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

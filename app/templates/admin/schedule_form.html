@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}New Schedule Slot{% endblock %}
+{% block content %}
+<h1>New Availability Slot</h1>
+<div class="card" style="max-width:520px;">
+  <form method="POST" class="stacked-form" novalidate>
+    {{ form.hidden_tag() }}
+    {% from "partials/_form_helpers.html" import field %}
+    {{ field(form.expert_id) }}
+    {{ field(form.day_of_week) }}
+    {{ field(form.start_time) }}
+    {{ field(form.end_time) }}
+    {{ field(form.is_active) }}
+    {{ form.submit(class_="btn btn-primary") }}
+  </form>
+</div>
+{% endblock %}

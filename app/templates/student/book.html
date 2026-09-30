@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}Book Consultation{% endblock %}
+{% block content %}
+<h1>Book a Consultation</h1>
+<div class="card" style="max-width:560px;">
+    <form class="form-grid" method="POST">
+        {{ form.hidden_tag() }}
+        {{ render_field(form.category_id) }}
+        {{ render_field(form.expert_id) }}
+        {{ render_field(form.requested_date) }}
+        {{ render_field(form.requested_time) }}
+        {{ render_field(form.student_message) }}
+        {{ form.submit(class="btn") }}
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}My Queue{% endblock %}
+{% block content %}
+<h1>My Queue</h1>
+
+<div class="pill-nav">
+  <a href="{{ url_for('expert.queue', status='pending') }}" class="{{ 'active' if status_filter=='pending' }}">My Pending</a>
+  <a href="{{ url_for('expert.queue', status='pool') }}" class="{{ 'active' if status_filter=='pool' }}">Unassigned Pool</a>
+  <a href="{{ url_for('expert.queue', status='accepted') }}" class="{{ 'active' if status_filter=='accepted' }}">Accepted / Upcoming</a>
+  <a href="{{ url_for('expert.queue', status='completed') }}" class="{{ 'active' if status_filter=='completed' }}">Completed</a>
+  <a href="{{ url_for('expert.queue', status='declined') }}" class="{{ 'active' if status_filter=='declined' }}">Declined</a>
+</div>
+
+<div class="card">
+  {% if consultations %}
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Student</th><th>Category</th><th>Date/Time</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for c in consultations %}
+      <tr>
+        <td>{{ c.student.full_name }}</td>
+        <td>{{ c.category.name }}</td>
+        <td>{{ c.requested_date.strftime("%b %d, %Y") }} {{ c.requested_time.strftime("%I:%M %p") }}</td>
+        <td><span class="badge {{ c.status_badge_class }}">{{ c.status|title }}</span></td>
+        <td><a href="{{ url_for('expert.view_consultation', consultation_id=c.id) }}">Open</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <div class="empty-state">Nothing here right now.</div>
+  {% endif %}
+</div>
+{% endblock %}

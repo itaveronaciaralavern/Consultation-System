@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "partials/_form_helpers.html" import render_field %}
+{% block title %}My Availability{% endblock %}
+{% block content %}
+<h1>My Availability</h1>
+
+<div class="detail-grid">
+    <div>
+        <div class="card">
+            {% if slots %}
+            <table>
+                <thead><tr><th>When</th><th>Time</th><th>Max Bookings</th><th></th></tr></thead>
+                <tbody>
+                {% set days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %}
+                {% for s in slots %}
+                    <tr>
+                        <td>{{ days[s.day_of_week] if s.day_of_week is not none else s.specific_date }}</td>
+                        <td>{{ s.start_time.strftime('%I:%M %p') }} – {{ s.end_time.strftime('%I:%M %p') }}</td>
+                        <td>{{ s.max_bookings }}</td>
+                        <td>
+                            <form class="inline-form" method="POST" action="{{ url_for('expert.delete_availability', slot_id=s.id) }}" data-confirm="Remove this availability slot?">
+                                <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="empty-state">No availability slots set yet.</div>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <div class="card">
+            <h2 style="margin-top:0;">Add Slot</h2>
+            <form class="form-grid" method="POST">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.day_of_week) }}
+                {{ render_field(form.specific_date) }}
+                {{ render_field(form.start_time) }}
+                {{ render_field(form.end_time) }}
+                {{ render_field(form.max_bookings) }}
+                {{ form.submit(class="btn") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

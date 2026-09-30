@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<h1>Notifications</h1>
+<div class="card" style="padding:0;">
+    {% if notifications %}
+        {% for n in notifications %}
+        <div class="notification-item {{ '' if n.is_read else 'unread' }}">
+            <div>
+                <div>{{ n.message }}</div>
+                <small class="muted">{{ n.created_at.strftime('%b %d, %Y %I:%M %p') }}</small>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                {% if n.link %}<a class="btn btn-sm btn-secondary" href="{{ n.link }}">View</a>{% endif %}
+                {% if not n.is_read %}
+                <form class="inline-form" method="POST" action="{{ url_for('main.mark_notification_read', notification_id=n.id) }}">
+                    <button class="btn btn-sm" type="submit">Mark Read</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">No notifications yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<h1>System Analytics</h1>
+
+<div class="card">
+  <h2>Consultations by Status</h2>
+  <div class="grid grid-3">
+    {% for status, count in by_status.items() %}
+      <div class="stat-box"><div class="num">{{ count }}</div><div class="label">{{ status|title }}</div></div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h2>By Category</h2>
+    {% if by_category %}
+    <table>
+      <thead><tr><th>Category</th><th>Count</th></tr></thead>
+      <tbody>
+      {% for name, count in by_category %}
+        <tr><td>{{ name }}</td><td>{{ count }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<div class="empty-state">No data yet.</div>{% endif %}
+  </div>
+  <div class="card">
+    <h2>By Medical Expert</h2>
+    {% if by_expert %}
+    <table>
+      <thead><tr><th>Expert</th><th>Consultations Handled</th></tr></thead>
+      <tbody>
+      {% for name, count in by_expert %}
+        <tr><td>{{ name }}</td><td>{{ count }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<div class="empty-state">No data yet.</div>{% endif %}
+  </div>
+</div>
+{% endblock %}

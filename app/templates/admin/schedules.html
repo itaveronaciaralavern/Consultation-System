@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Schedules{% endblock %}
+{% block content %}
+<h1>Expert Schedules</h1>
+<div class="actions-row" style="margin-bottom:16px;">
+  <a class="btn btn-primary" href="{{ url_for('admin.create_schedule') }}">+ New Slot</a>
+</div>
+<div class="card">
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Expert</th><th>Day</th><th>Start</th><th>End</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+    {% for s in slots %}
+      <tr>
+        <td>{{ s.expert.full_name }}</td>
+        <td>{{ s.day_name }}</td>
+        <td>{{ s.start_time.strftime("%I:%M %p") }}</td>
+        <td>{{ s.end_time.strftime("%I:%M %p") }}</td>
+        <td>{{ "Yes" if s.is_active else "No" }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.delete_schedule', slot_id=s.id) }}" data-confirm="Remove this slot?">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
